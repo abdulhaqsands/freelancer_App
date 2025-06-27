@@ -1,0 +1,124 @@
+generator client {
+  provider = "prisma-client-js"
+  // output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum ROLE {
+  ADMIN
+  FREELANCER
+  CLIENT
+}
+
+enum OTPTYPE {
+  SIGN_UP
+  RESET
+}
+
+enum OrderStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+  COMPLETED
+  CANCELLED
+}
+
+model User {
+  id          Int          @id @default(autoincrement())
+  email       String
+  password    String
+  role        ROLE
+  userDetails UserDetails?
+  portfolios  Portfolio[]
+  gigs        Gig[]
+  media       Media[]
+
+  createdAt DateTime @default(now())
+  ordersPlaced     Order[] @relation("placedOrders")
+  orderReceived     Order[] @relation("receivedOrders")
+}
+
+model Otp {
+  id        Int      @id @default(autoincrement())
+  email     String
+  otp       Int
+  expiry    DateTime
+  otpType   OTPTYPE  @default(SIGN_UP)
+  createdAt DateTime @default(now())
+}
+
+model UserDetails {
+  id           Int     @id @default(autoincrement())
+  userId       Int     @unique
+  profileImage String?
+  phone        String?
+  bio          String?
+  location     String?
+  experience   String?
+  education    String?
+  languages    String?
+
+  user User @relation(fields: [userId], references: [id])
+}
+
+model Portfolio {
+  id          Int      @id @default(autoincrement())
+  userId      Int
+  title       String
+  description String?
+  mediaUrl    String?
+  createdAt   DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+
+  media Media[]
+}
+
+model Gig {
+  id           Int      @id @default(autoincrement())
+  userId       Int
+  title        String
+  description  String
+  category     String
+  price        Float
+  deliveryDays Int
+  image        String? // uploads/gigs/
+  createdAt    DateTime @default(now())
+
+  user   User    @relation(fields: [userId], references: [id])
+  orders Order[]
+}
+
+model Order {
+  id           Int         @id @default(autoincrement())
+  gigId        Int
+  clientId     Int
+  freelancerId Int
+  status       OrderStatus @default(PENDING)
+  message      String?
+  createdAt    DateTime    @default(now())
+
+  gig        Gig  @relation(fields: [gigId], references: [id])
+  client     User @relation("placedOrders", fields: [clientId], references: [id])
+  freelancer User @relation("receivedOrders", fields: [freelancerId], references: [id])
+}
+enum MEDIA_TYPE {
+  IMAGE
+  VIDEO
+  PDF
+  DOC
+}
+model Media {
+  id Int @id @default(autoincrement())
+  type MEDIA_TYPE @default(IMAGE)
+  url String
+  userId Int
+  portfolio  Portfolio? @relation(fields: [portfolioId], references: [id])
+  portfolioId Int?
+  user User @relation(fields: [userId],references: [id])
+  createdAt DateTime @default(now())
+}
