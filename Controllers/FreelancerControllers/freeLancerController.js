@@ -53,7 +53,31 @@ return successResponse(res,201,"PortFolio Created: ",createPortfolio)
     }
 
 }
+const updatePortFolio=async(req,res)=>{
+    try {
+        const userId=req.user.id;
+        const porfolioId=parseInt(req.params.id);
+        const {title,description}=req.body;
+        const existUserPortFolio=await prisma.portfolio.findFirst({
+            where:{id:porfolioId,userId}
+        });
+        if(!existUserPortFolio) return errorResponse(res,401,"No Port_folio Found");
+        await prisma.portfolio.update({
+            where:{id:porfolioId,userId},
+            data:{
+                title,description
+            }
+        });
+        return successResponse(res,201,"Updated PortFolio: ")
+
+        
+    } catch (error) {
+        console.log("Error",error);
+        return errorResponse(res,500,"Something Went Wrong:")
+    }
+}
 
 module.exports={
-    createPortFolio
+    createPortFolio,
+    updatePortFolio
 }

@@ -1,5 +1,5 @@
 const { errorResponse } = require("../Config/errorHandling")
-const isFreelancer=(req,res,next)=>{
+const isClient=(req,res,next)=>{
 
     const role=req.user.role;
    if(role !== "CLIENT"){
@@ -7,4 +7,4 @@ const isFreelancer=(req,res,next)=>{
    }
    next();
 }
-module.exports=isFreelancer;
+module.exports=isClient;

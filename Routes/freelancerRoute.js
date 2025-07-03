@@ -10,5 +10,13 @@ const { updateOrderStatus } = require("../Controllers/FreelancerControllers/Acee
 frelancerRoute.post("/create-portfolio",verifyToken,isFreelancer,upload.array("files"),freelancerController.createPortFolio);
 frelancerRoute.post("/create-gig",verifyToken,isFreelancer,upload.single("file"),freeLancerGigsController.createGigs);
 frelancerRoute.post("/update-status/:orderId",verifyToken,isFreelancer,updateOrderStatus)
+frelancerRoute.put("/update-Gig/:id",verifyToken,isFreelancer,freeLancerGigsController.updateGig);
+frelancerRoute.get("/get-my-gigs",verifyToken,isFreelancer,freeLancerGigsController.getGigs);
+frelancerRoute.delete("/delete-my-gigs/:id",verifyToken,isFreelancer,freeLancerGigsController.deleteGig);
+frelancerRoute.put("/update-portFolio/:id",verifyToken,isFreelancer,freelancerController.updatePortFolio);
+
+
+
+
 
 module.exports=frelancerRoute;

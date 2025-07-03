@@ -7,7 +7,7 @@ const createPortFolioSchema=joi.object({
 });
 const createGigsSchema=joi.object({
     file:joi.string().optional(),
-    files:joi.string().optional(),
+   // files:joi.string().optional(),
     title:joi.string().required(),
     description:joi.string().required(),
     price:joi.number().required(),

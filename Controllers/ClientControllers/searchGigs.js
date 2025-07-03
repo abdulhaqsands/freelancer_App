@@ -1,3 +1,4 @@
+const { equal } = require("joi");
 const { errorResponse, successResponse } = require("../../Config/errorHandling");
 const prisma=require("../../Config/prisma");
 
@@ -32,7 +33,7 @@ const searchGigs=async(req,res)=>{
   }
   if(deliveryDays){
     filters.push({
-        deliveryDays:{lte:parseInt(deliveryDays)}
+        deliveryDays:{equals:parseInt(deliveryDays)}
     });
   }
    if (filters.length === 0) {
